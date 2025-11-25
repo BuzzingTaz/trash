@@ -7,6 +7,12 @@ import (
 	"strings"
 )
 
+var shellBuiltins = map[string]int{
+	"exit": 0,
+	"echo": 1,
+	"type": 2,
+}
+
 func main() {
 
 	for {
@@ -37,6 +43,12 @@ func handleInput() (exit int){
 		return 1
 	case "echo":
 		fmt.Println(strings.Join(commandWords[1:], " "))
+	case "type":
+		if _, ok := shellBuiltins[commandWords[1]]; ok {
+			fmt.Printf("%s is a shell builtin\n", commandWords[1])
+		} else {
+			fmt.Printf("%s: not found\n", commandWords[1])
+		}
 	default:
 		fmt.Printf("%v: command not found\n", command)
 	}
