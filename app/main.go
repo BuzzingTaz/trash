@@ -18,7 +18,12 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%v: command not found\n", command[:len(command)-1])
-	}
 
+		switch command {
+			case "exit\n":
+				return
+			default:
+				fmt.Printf("%v: command not found\n", command[:len(command)-1])
+		}
+	}
 }
