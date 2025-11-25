@@ -6,24 +6,31 @@ import (
 	"os"
 )
 
-// Ensures gofmt doesn't remove the "fmt" and "os" imports in stage 1 (feel free to remove this!)
-var _ = fmt.Fprint
-var _ = os.Stdout
-
 func main() {
 
 	for {
+		printPrompt()
+		handleInput()
 		fmt.Fprint(os.Stdout, "$ ")
-		command, err := bufio.NewReader(os.Stdin).ReadString('\n')
-		if err != nil {
-			panic(err)
-		}
+	}
+}
 
-		switch command {
-			case "exit\n":
-				return
-			default:
-				fmt.Printf("%v: command not found\n", command[:len(command)-1])
-		}
+func printPrompt() {
+	fmt.Fprint(os.Stdout, "$ ")
+}
+
+func handleInput() {
+	command, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error reading input:", err)
+		return
+	}
+
+	command = command[:len(command)-1]
+	switch command {
+	case "exit":
+		return
+	default:
+		fmt.Printf("%v: command not found\n", command[:len(command)-1])
 	}
 }
