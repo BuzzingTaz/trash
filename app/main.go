@@ -28,7 +28,7 @@ func printPrompt() {
 	fmt.Fprint(os.Stdout, "$ ")
 }
 
-func handleInput() (exit int){
+func handleInput() (exit int) {
 	command, err := bufio.NewReader(os.Stdin).ReadString('\n')
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error reading input:", err)
@@ -46,6 +46,8 @@ func handleInput() (exit int){
 	case "type":
 		if _, ok := shellBuiltins[commandWords[1]]; ok {
 			fmt.Printf("%s is a shell builtin\n", commandWords[1])
+		} else if path, err := findExecutableInPath(commandWords[1]); err == nil {
+			fmt.Printf("%s is %s\n", commandWords[1], path)
 		} else {
 			fmt.Printf("%s: not found\n", commandWords[1])
 		}
@@ -53,4 +55,18 @@ func handleInput() (exit int){
 		fmt.Printf("%v: command not found\n", command)
 	}
 	return 0
+}
+
+func findExecutableInPath(cmd string) (string, error) {
+	pathEnv := os.Getenv("PATH")
+	paths := strings.Split(pathEnv, string(os.PathListSeparator))
+
+	for _, dir := range paths {
+		fullPath := dir + string(os.PathSeparator) + cmd
+		info, err := os.Stat(fullPath)
+		if err == nil && !info.IsDir() && info.Mode()&0111 != 0 {
+			return fullPath, nil
+		}
+	}
+	return "", os.ErrNotExist
 }
