@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -58,15 +59,5 @@ func handleInput() (exit int) {
 }
 
 func findExecutableInPath(cmd string) (string, error) {
-	pathEnv := os.Getenv("PATH")
-	paths := strings.Split(pathEnv, string(os.PathListSeparator))
-
-	for _, dir := range paths {
-		fullPath := dir + string(os.PathSeparator) + cmd
-		info, err := os.Stat(fullPath)
-		if err == nil && !info.IsDir() && info.Mode()&0111 != 0 {
-			return fullPath, nil
-		}
-	}
-	return "", os.ErrNotExist
+	return exec.LookPath(cmd)
 }
