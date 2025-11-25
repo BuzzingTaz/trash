@@ -1,3 +1,3 @@
-module github.com/codecrafters-io/shell-starter-go
+module github.com/BuzzingTaz/trash
 
 go 1.25.0
