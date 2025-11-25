@@ -67,13 +67,13 @@ func handleInput() (exit int) {
 		return exit
 	}
 
-	path, err := findExecutableInPath(commandWords[0])
+	_, err = findExecutableInPath(commandWords[0])
 	if err != nil {
 		fmt.Printf("%v: command not found\n", command)
 		return exit
 	}
 
-	cmd := exec.Command(path, commandWords[1:]...)
+	cmd := exec.Command(commandWords[0], commandWords[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
